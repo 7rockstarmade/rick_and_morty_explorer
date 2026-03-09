@@ -1,0 +1,25 @@
+import 'package:dio/dio.dart';
+import 'package:rick_and_morty_exporer/core/constants/api_constants.dart';
+import 'package:rick_and_morty_exporer/features/characters/data/models/character_response_model.dart';
+
+abstract class CharactersRemoteDatasource {
+  Future<CharacterResponseModel> getCharacters(int page);
+}
+
+class CharactersRemoteDataSourceImpl implements CharactersRemoteDatasource {
+  final Dio dio;
+  const CharactersRemoteDataSourceImpl(this.dio);
+
+  @override
+  Future<CharacterResponseModel> getCharacters(int page) async {
+    try {
+      final response = await dio.get(
+        ApiConstants.charactersPath,
+        queryParameters: {'page': ApiConstants.firstPage},
+      );
+      return CharacterResponseModel.fromJson(response.data);
+    } on DioException catch (e) {
+      throw Exception(e);
+    }
+  }
+}
