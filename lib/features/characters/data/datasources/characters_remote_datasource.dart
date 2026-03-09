@@ -15,7 +15,7 @@ class CharactersRemoteDataSourceImpl implements CharactersRemoteDatasource {
     try {
       final response = await dio.get(
         ApiConstants.charactersPath,
-        queryParameters: {'page': ApiConstants.firstPage},
+        queryParameters: {'page': page},
       );
       return CharacterResponseModel.fromJson(response.data);
     } on DioException catch (e) {
