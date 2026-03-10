@@ -1,1 +1,1 @@
-# Rick & Morty Characters App
+# Rick & Morty Characters Explorer
