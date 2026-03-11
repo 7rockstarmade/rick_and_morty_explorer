@@ -4,6 +4,9 @@ import 'package:rick_and_morty_exporer/features/home/presentation/pages/home_she
 import 'package:rick_and_morty_exporer/features/home/presentation/bloc/nav_cubit.dart';
 import 'package:rick_and_morty_exporer/app/theme/app_theme.dart';
 import 'package:rick_and_morty_exporer/app/theme/theme_cubit.dart';
+import 'package:rick_and_morty_exporer/features/favorites/data/datasources/favorites_local_datasource.dart';
+import 'package:rick_and_morty_exporer/features/favorites/data/repositories/favorites_repository.dart';
+import 'package:rick_and_morty_exporer/features/favorites/presentation/bloc/favorites_cubit.dart';
 
 class RickAndMortyExplorer extends StatelessWidget {
   const RickAndMortyExplorer({super.key});
@@ -14,6 +17,11 @@ class RickAndMortyExplorer extends StatelessWidget {
       providers: [
         BlocProvider(create: (_) => ThemeCubit()),
         BlocProvider(create: (_) => NavCubit()),
+        BlocProvider(
+          create: (_) => FavoritesCubit(
+            FavoritesRepositoryImpl(FavoritesLocalDataSource()),
+          )..load(),
+        ),
       ],
       child: BlocBuilder<ThemeCubit, ThemeMode>(
         builder: (context, themeMode) {

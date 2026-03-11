@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:rick_and_morty_exporer/core/network/dio_client.dart';
+import 'package:rick_and_morty_exporer/features/characters/data/datasources/characters_local_datasource.dart';
 import 'package:rick_and_morty_exporer/features/characters/data/datasources/characters_remote_datasource.dart';
 import 'package:rick_and_morty_exporer/features/characters/data/repositories/characters_repository.dart';
 import 'package:rick_and_morty_exporer/features/characters/presentation/bloc/characters_bloc.dart';
 import 'package:rick_and_morty_exporer/features/characters/presentation/bloc/characters_event.dart';
 import 'package:rick_and_morty_exporer/features/characters/presentation/bloc/characters_state.dart';
+import 'package:rick_and_morty_exporer/features/favorites/presentation/bloc/favorites_cubit.dart';
 import 'package:rick_and_morty_exporer/shared/widgets/character_card.dart';
 
 class CharactersPage extends StatelessWidget {
@@ -16,7 +18,11 @@ class CharactersPage extends StatelessWidget {
     return BlocProvider(
       create: (_) {
         final remote = CharactersRemoteDataSourceImpl(DioClient.instance);
-        final repository = CharactersRepositoryImpl(remote);
+        final local = CharactersLocalDataSource();
+        final repository = CharactersRepositoryImpl(
+          remoteDataSource: remote,
+          localDataSource: local,
+        );
         return CharactersBloc(repository)..add(const CharactersStarted());
       },
       child: BlocBuilder<CharactersBloc, CharactersState>(
@@ -26,6 +32,8 @@ class CharactersPage extends StatelessWidget {
             loading: (_) => const Center(child: CircularProgressIndicator()),
             error: (e) => Center(child: Text(e.message ?? 'Unknown error')),
             loaded: (state) {
+              final favoriteIds = context.watch<FavoritesCubit>().state;
+
               return NotificationListener<ScrollNotification>(
                 onNotification: (notification) {
                   final metrics = notification.metrics;
@@ -48,20 +56,24 @@ class CharactersPage extends StatelessWidget {
                       sliver: SliverList(
                         delegate: SliverChildBuilderDelegate(
                           childCount: state.characters.length,
-                          (context, index) {
-                            final character = state.characters[index];
-                            return Padding(
-                              padding: const EdgeInsets.only(bottom: 12),
-                              child: CharacterCard(
-                                imageUrl: character.image,
-                                name: character.name,
-                                species: character.species,
-                              ),
-                            );
-                          },
-                        ),
+                        (context, index) {
+                          final character = state.characters[index];
+                          final isFavorite = favoriteIds.contains(character.id);
+                          return Padding(
+                            padding: const EdgeInsets.only(bottom: 12),
+                            child: CharacterCard(
+                              imageUrl: character.image,
+                              name: character.name,
+                              species: character.species,
+                              isFavorite: isFavorite,
+                              onFavoritePressed: () =>
+                                  context.read<FavoritesCubit>().toggle(character.id),
+                            ),
+                          );
+                        },
                       ),
                     ),
+                  ),
                     if (state.isFetchingMore)
                       const SliverToBoxAdapter(
                         child: Padding(
