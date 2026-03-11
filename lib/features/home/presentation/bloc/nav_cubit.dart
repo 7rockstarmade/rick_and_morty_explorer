@@ -1,7 +1,9 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-class NavCubit extends Cubit<int> {
-  NavCubit() : super(0);
+enum HomeTab { characters, favorites }
 
-  void setIndex(int index) => emit(index);
+class NavCubit extends Cubit<HomeTab> {
+  NavCubit() : super(HomeTab.characters);
+
+  void setTab(HomeTab tab) => emit(tab);
 }

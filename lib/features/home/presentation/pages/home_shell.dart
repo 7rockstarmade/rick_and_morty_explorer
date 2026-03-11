@@ -10,18 +10,19 @@ class HomePage extends StatelessWidget {
   const HomePage({super.key});
 
   static const _pages = [CharactersPage(), FavoritesPage()];
-  static const titles = {0: 'All Characters', 1: 'Favourites Characters'};
+  static const _titles = ['All Characters', 'Favorites'];
+
   @override
   Widget build(BuildContext context) {
-    final currentIndex = context.select((NavCubit cubit) => cubit.state);
+    final currentTab = context.select((NavCubit cubit) => cubit.state);
+    final currentIndex = currentTab.index;
 
     return Scaffold(
-      appBar: AppTopBar(title: titles[currentIndex]!),
+      appBar: AppTopBar(title: _titles[currentIndex]),
       body: IndexedStack(index: currentIndex, children: _pages),
       bottomNavigationBar: AppBottomNavigationBar(
-        currentIndex: currentIndex,
-        onDestinationSelected: (index) =>
-            context.read<NavCubit>().setIndex(index),
+        currentTab: currentTab,
+        onTabSelected: (tab) => context.read<NavCubit>().setTab(tab),
       ),
     );
   }

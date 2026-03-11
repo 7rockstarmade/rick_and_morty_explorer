@@ -5,11 +5,9 @@ class FavoritesPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const Scaffold(
-      body: Center(
-        // TODO: favourites page
-        child: Text('Favorites'),
-      ),
+    return const Center(
+      // TODO: favourites page
+      child: Text('Favorites'),
     );
   }
 }

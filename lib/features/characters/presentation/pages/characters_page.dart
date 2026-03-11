@@ -5,11 +5,9 @@ class CharactersPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const Scaffold(
-      body: Center(
-        // TODO: characters page
-        child: Text('Characters'),
-      ),
+    return const Center(
+      // TODO: characters page
+      child: Text('Characters'),
     );
   }
 }

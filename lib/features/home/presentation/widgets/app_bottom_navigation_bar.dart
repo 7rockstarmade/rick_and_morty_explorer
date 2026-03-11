@@ -1,38 +1,41 @@
 import 'package:flutter/material.dart';
+import 'package:rick_and_morty_exporer/features/home/presentation/bloc/nav_cubit.dart';
 
 class AppBottomNavigationBar extends StatelessWidget {
   const AppBottomNavigationBar({
     super.key,
-    required this.currentIndex,
-    required this.onDestinationSelected,
+    required this.currentTab,
+    required this.onTabSelected,
   });
 
-  final int currentIndex;
-  final ValueChanged<int> onDestinationSelected;
+  final HomeTab currentTab;
+  final ValueChanged<HomeTab> onTabSelected;
 
   @override
   Widget build(BuildContext context) {
     final scheme = Theme.of(context).colorScheme;
     final unselected = scheme.onSurfaceVariant.withValues(alpha: 0.85);
+    const selected = Colors.white;
 
     return NavigationBarTheme(
       data: NavigationBarThemeData(
+        indicatorColor: scheme.primaryContainer,
         iconTheme: WidgetStateProperty.resolveWith((states) {
           final color = states.contains(WidgetState.selected)
-              ? scheme.primary
+              ? selected
               : unselected;
           return IconThemeData(color: color);
         }),
         labelTextStyle: WidgetStateProperty.resolveWith((states) {
           final color = states.contains(WidgetState.selected)
-              ? scheme.primary
+              ? selected
               : unselected;
           return TextStyle(color: color);
         }),
       ),
       child: NavigationBar(
-        selectedIndex: currentIndex,
-        onDestinationSelected: onDestinationSelected,
+        selectedIndex: currentTab.index,
+        onDestinationSelected: (index) => onTabSelected(HomeTab.values[index]),
         destinations: const [
           NavigationDestination(
             icon: Icon(Icons.people_outline),
