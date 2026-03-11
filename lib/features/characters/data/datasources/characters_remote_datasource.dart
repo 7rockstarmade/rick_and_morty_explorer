@@ -12,14 +12,10 @@ class CharactersRemoteDataSourceImpl implements CharactersRemoteDataSource {
 
   @override
   Future<CharacterResponseModel> getCharacters(int page) async {
-    try {
-      final response = await dio.get(
-        ApiConstants.charactersPath,
-        queryParameters: {'page': page},
-      );
-      return CharacterResponseModel.fromJson(response.data);
-    } on DioException catch (e) {
-      throw Exception(e);
-    }
+    final response = await dio.get(
+      ApiConstants.charactersPath,
+      queryParameters: {'page': page},
+    );
+    return CharacterResponseModel.fromJson(response.data);
   }
 }

@@ -14,4 +14,11 @@ class CharacterResponseModel {
       next: json['info']['next'],
     );
   }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'info': {'next': next},
+      'results': characters.map((c) => c.toJson()).toList(),
+    };
+  }
 }

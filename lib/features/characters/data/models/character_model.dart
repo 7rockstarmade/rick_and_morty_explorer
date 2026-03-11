@@ -28,6 +28,17 @@ class CharacterModel extends Equatable {
     );
   }
 
+  Map<String, dynamic> toJson() {
+    return {
+      'id': id,
+      'name': name,
+      'status': status,
+      'species': species,
+      'location': {'name': location},
+      'image': image,
+    };
+  }
+
   @override
   List<Object?> get props => [id, name, status, species, location, image];
 }
