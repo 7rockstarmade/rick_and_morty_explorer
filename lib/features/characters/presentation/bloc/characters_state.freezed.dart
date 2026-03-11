@@ -128,12 +128,12 @@ return error(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function()?  initial,TResult Function()?  loading,TResult Function( List<CharacterModel> characters,  int currentPage,  bool hasMore,  bool isFetchingMore)?  loaded,TResult Function( String? message)?  error,required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function()?  initial,TResult Function()?  loading,TResult Function( List<CharacterModel> characters,  int currentPage,  bool hasMore,  String? next,  bool isFetchingMore)?  loaded,TResult Function( String? message)?  error,required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _Initial() when initial != null:
 return initial();case _Loading() when loading != null:
 return loading();case _Loaded() when loaded != null:
-return loaded(_that.characters,_that.currentPage,_that.hasMore,_that.isFetchingMore);case _Error() when error != null:
+return loaded(_that.characters,_that.currentPage,_that.hasMore,_that.next,_that.isFetchingMore);case _Error() when error != null:
 return error(_that.message);case _:
   return orElse();
 
@@ -152,12 +152,12 @@ return error(_that.message);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function()  initial,required TResult Function()  loading,required TResult Function( List<CharacterModel> characters,  int currentPage,  bool hasMore,  bool isFetchingMore)  loaded,required TResult Function( String? message)  error,}) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function()  initial,required TResult Function()  loading,required TResult Function( List<CharacterModel> characters,  int currentPage,  bool hasMore,  String? next,  bool isFetchingMore)  loaded,required TResult Function( String? message)  error,}) {final _that = this;
 switch (_that) {
 case _Initial():
 return initial();case _Loading():
 return loading();case _Loaded():
-return loaded(_that.characters,_that.currentPage,_that.hasMore,_that.isFetchingMore);case _Error():
+return loaded(_that.characters,_that.currentPage,_that.hasMore,_that.next,_that.isFetchingMore);case _Error():
 return error(_that.message);case _:
   throw StateError('Unexpected subclass');
 
@@ -175,12 +175,12 @@ return error(_that.message);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function()?  initial,TResult? Function()?  loading,TResult? Function( List<CharacterModel> characters,  int currentPage,  bool hasMore,  bool isFetchingMore)?  loaded,TResult? Function( String? message)?  error,}) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function()?  initial,TResult? Function()?  loading,TResult? Function( List<CharacterModel> characters,  int currentPage,  bool hasMore,  String? next,  bool isFetchingMore)?  loaded,TResult? Function( String? message)?  error,}) {final _that = this;
 switch (_that) {
 case _Initial() when initial != null:
 return initial();case _Loading() when loading != null:
 return loading();case _Loaded() when loaded != null:
-return loaded(_that.characters,_that.currentPage,_that.hasMore,_that.isFetchingMore);case _Error() when error != null:
+return loaded(_that.characters,_that.currentPage,_that.hasMore,_that.next,_that.isFetchingMore);case _Error() when error != null:
 return error(_that.message);case _:
   return null;
 
@@ -257,7 +257,7 @@ String toString() {
 
 
 class _Loaded implements CharactersState {
-  const _Loaded({required final  List<CharacterModel> characters, required this.currentPage, required this.hasMore, this.isFetchingMore = false}): _characters = characters;
+  const _Loaded({required final  List<CharacterModel> characters, required this.currentPage, required this.hasMore, this.next, this.isFetchingMore = false}): _characters = characters;
   
 
  final  List<CharacterModel> _characters;
@@ -269,6 +269,7 @@ class _Loaded implements CharactersState {
 
  final  int currentPage;
  final  bool hasMore;
+ final  String? next;
 @JsonKey() final  bool isFetchingMore;
 
 /// Create a copy of CharactersState
@@ -281,16 +282,16 @@ _$LoadedCopyWith<_Loaded> get copyWith => __$LoadedCopyWithImpl<_Loaded>(this, _
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _Loaded&&const DeepCollectionEquality().equals(other._characters, _characters)&&(identical(other.currentPage, currentPage) || other.currentPage == currentPage)&&(identical(other.hasMore, hasMore) || other.hasMore == hasMore)&&(identical(other.isFetchingMore, isFetchingMore) || other.isFetchingMore == isFetchingMore));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _Loaded&&const DeepCollectionEquality().equals(other._characters, _characters)&&(identical(other.currentPage, currentPage) || other.currentPage == currentPage)&&(identical(other.hasMore, hasMore) || other.hasMore == hasMore)&&(identical(other.next, next) || other.next == next)&&(identical(other.isFetchingMore, isFetchingMore) || other.isFetchingMore == isFetchingMore));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,const DeepCollectionEquality().hash(_characters),currentPage,hasMore,isFetchingMore);
+int get hashCode => Object.hash(runtimeType,const DeepCollectionEquality().hash(_characters),currentPage,hasMore,next,isFetchingMore);
 
 @override
 String toString() {
-  return 'CharactersState.loaded(characters: $characters, currentPage: $currentPage, hasMore: $hasMore, isFetchingMore: $isFetchingMore)';
+  return 'CharactersState.loaded(characters: $characters, currentPage: $currentPage, hasMore: $hasMore, next: $next, isFetchingMore: $isFetchingMore)';
 }
 
 
@@ -301,7 +302,7 @@ abstract mixin class _$LoadedCopyWith<$Res> implements $CharactersStateCopyWith<
   factory _$LoadedCopyWith(_Loaded value, $Res Function(_Loaded) _then) = __$LoadedCopyWithImpl;
 @useResult
 $Res call({
- List<CharacterModel> characters, int currentPage, bool hasMore, bool isFetchingMore
+ List<CharacterModel> characters, int currentPage, bool hasMore, String? next, bool isFetchingMore
 });
 
 
@@ -318,12 +319,13 @@ class __$LoadedCopyWithImpl<$Res>
 
 /// Create a copy of CharactersState
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') $Res call({Object? characters = null,Object? currentPage = null,Object? hasMore = null,Object? isFetchingMore = null,}) {
+@pragma('vm:prefer-inline') $Res call({Object? characters = null,Object? currentPage = null,Object? hasMore = null,Object? next = freezed,Object? isFetchingMore = null,}) {
   return _then(_Loaded(
 characters: null == characters ? _self._characters : characters // ignore: cast_nullable_to_non_nullable
 as List<CharacterModel>,currentPage: null == currentPage ? _self.currentPage : currentPage // ignore: cast_nullable_to_non_nullable
 as int,hasMore: null == hasMore ? _self.hasMore : hasMore // ignore: cast_nullable_to_non_nullable
-as bool,isFetchingMore: null == isFetchingMore ? _self.isFetchingMore : isFetchingMore // ignore: cast_nullable_to_non_nullable
+as bool,next: freezed == next ? _self.next : next // ignore: cast_nullable_to_non_nullable
+as String?,isFetchingMore: null == isFetchingMore ? _self.isFetchingMore : isFetchingMore // ignore: cast_nullable_to_non_nullable
 as bool,
   ));
 }

@@ -11,6 +11,7 @@ class CharactersState with _$CharactersState {
     required List<CharacterModel> characters,
     required int currentPage,
     required bool hasMore,
+    String? next,
     @Default(false) bool isFetchingMore,
   }) = _Loaded;
   const factory CharactersState.error(String? message) = _Error;

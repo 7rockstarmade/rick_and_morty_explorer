@@ -52,10 +52,7 @@ class CharacterCard extends StatelessWidget {
                     width: _imageSize,
                     height: _imageSize,
                     color: scheme.surfaceContainerHighest,
-                    child: Icon(
-                      Icons.person,
-                      color: scheme.onSurfaceVariant,
-                    ),
+                    child: Icon(Icons.person, color: scheme.onSurfaceVariant),
                   ),
                 ),
               ),
@@ -70,8 +67,8 @@ class CharacterCard extends StatelessWidget {
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
                       style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                            fontWeight: FontWeight.w700,
-                          ),
+                        fontWeight: FontWeight.w700,
+                      ),
                     ),
                     const SizedBox(height: 4),
                     Text(
@@ -79,8 +76,8 @@ class CharacterCard extends StatelessWidget {
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
                       style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                            color: scheme.onSurfaceVariant,
-                          ),
+                        color: scheme.onSurfaceVariant,
+                      ),
                     ),
                   ],
                 ),
@@ -88,7 +85,10 @@ class CharacterCard extends StatelessWidget {
               const SizedBox(width: 8),
               IconButton(
                 onPressed: onFavoritePressed,
-                icon: Icon(isFavorite ? Icons.star : Icons.star_border),
+                icon: Icon(
+                  isFavorite ? Icons.star : Icons.star_border,
+                  size: 30,
+                ),
                 tooltip: 'Favorite',
               ),
             ],

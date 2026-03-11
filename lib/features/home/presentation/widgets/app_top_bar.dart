@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:rick_and_morty_exporer/app/theme/theme_cubit.dart';
 
 class AppTopBar extends StatelessWidget implements PreferredSizeWidget {
   const AppTopBar({super.key, required this.title});
@@ -10,8 +12,23 @@ class AppTopBar extends StatelessWidget implements PreferredSizeWidget {
 
   @override
   Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+
     return AppBar(
-      title: Text(title, style: TextStyle(fontWeight: .w600, fontSize: 26)),
+      title: Text(
+        title,
+        style: const TextStyle(fontWeight: .w600, fontSize: 26),
+      ),
+      actions: [
+        IconButton(
+          tooltip: 'Toggle theme',
+          icon: Icon(isDark ? Icons.light_mode : Icons.dark_mode),
+          onPressed: () {
+            final cubit = context.read<ThemeCubit>();
+            cubit.setTheme(isDark ? ThemeMode.light : ThemeMode.dark);
+          },
+        ),
+      ],
     );
   }
 }

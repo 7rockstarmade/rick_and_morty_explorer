@@ -14,6 +14,17 @@ class CharactersBloc extends Bloc<CharactersEvent, CharactersState> {
     on<CharactersNextPageRequested>(_onNextPageRequested);
   }
 
+  int? _extractPage(String? nextUrl) {
+    if (nextUrl == null) {
+      return null;
+    }
+    final uri = Uri.tryParse(nextUrl);
+    if (uri == null) {
+      return null;
+    }
+    return int.tryParse(uri.queryParameters['page'] ?? '');
+  }
+
   Future<void> _onStarted(
     CharactersStarted event,
     Emitter<CharactersState> emit,
@@ -43,9 +54,12 @@ class CharactersBloc extends Bloc<CharactersEvent, CharactersState> {
       return;
     }
 
-    emit(loadedState.copyWith(isFetchingMore: true));
+    final nextPage = _extractPage(loadedState.next);
+    if (nextPage == null) {
+      return;
+    }
 
-    final nextPage = loadedState.currentPage + 1;
+    emit(loadedState.copyWith(isFetchingMore: true));
 
     try {
       final response = await _repository.getCharacters(nextPage);
@@ -54,11 +68,15 @@ class CharactersBloc extends Bloc<CharactersEvent, CharactersState> {
         ...response.characters,
       ];
 
+      final nextFromApi = response.next;
+      final hasMore = _extractPage(nextFromApi) != null;
+
       emit(
         CharactersState.loaded(
           characters: mergedCharacters,
           currentPage: nextPage,
-          hasMore: response.next != null,
+          hasMore: hasMore,
+          next: nextFromApi,
           isFetchingMore: false,
         ),
       );
@@ -71,11 +89,14 @@ class CharactersBloc extends Bloc<CharactersEvent, CharactersState> {
     emit(const CharactersState.loading());
     try {
       final response = await _repository.getCharacters(ApiConstants.firstPage);
+      final nextFromApi = response.next;
+      final hasMore = _extractPage(nextFromApi) != null;
       emit(
         CharactersState.loaded(
           characters: response.characters,
           currentPage: ApiConstants.firstPage,
-          hasMore: response.next != null,
+          hasMore: hasMore,
+          next: nextFromApi,
         ),
       );
     } catch (e) {
