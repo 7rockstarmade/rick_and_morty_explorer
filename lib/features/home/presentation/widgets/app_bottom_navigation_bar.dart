@@ -26,12 +26,6 @@ class AppBottomNavigationBar extends StatelessWidget {
               : unselected;
           return IconThemeData(color: color);
         }),
-        labelTextStyle: WidgetStateProperty.resolveWith((states) {
-          final color = states.contains(WidgetState.selected)
-              ? selected
-              : unselected;
-          return TextStyle(color: color);
-        }),
       ),
       child: NavigationBar(
         selectedIndex: currentTab.index,
