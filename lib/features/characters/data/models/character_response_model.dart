@@ -7,11 +7,16 @@ class CharacterResponseModel {
   CharacterResponseModel({required this.characters, required this.next});
 
   factory CharacterResponseModel.fromJson(Map<String, dynamic> json) {
-    final results = json['results'] as List;
+    final results = (json['results'] as List?) ?? const [];
+    final info = json['info'];
+    final nextValue = info is Map ? info['next'] : null;
 
     return CharacterResponseModel(
-      characters: results.map((e) => CharacterModel.fromJson(e)).toList(),
-      next: json['info']['next'],
+      characters: results
+          .whereType<Map>()
+          .map((e) => CharacterModel.fromJson(Map<String, dynamic>.from(e)))
+          .toList(),
+      next: nextValue is String ? nextValue : null,
     );
   }
 

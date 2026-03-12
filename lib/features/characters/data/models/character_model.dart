@@ -18,12 +18,15 @@ class CharacterModel extends Equatable {
   });
 
   factory CharacterModel.fromJson(Map<String, dynamic> json) {
+    final locationValue = json['location'];
+    final locationName = locationValue is Map ? locationValue['name'] : null;
+
     return CharacterModel(
       id: json['id'],
       name: json['name'],
       status: json['status'],
       species: json['species'],
-      location: json['location']['name'],
+      location: locationName is String ? locationName : '',
       image: json['image'],
     );
   }

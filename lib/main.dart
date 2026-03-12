@@ -8,5 +8,6 @@ Future<void> main() async {
   await Hive.initFlutter();
   await Hive.openBox(HiveConstants.charactersCacheBox);
   await Hive.openBox(HiveConstants.favoritesBox);
+  await Hive.openBox(HiveConstants.settingsBox);
   runApp(const RickAndMortyExplorer());
 }

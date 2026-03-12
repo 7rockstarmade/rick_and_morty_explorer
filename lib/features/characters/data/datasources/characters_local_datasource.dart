@@ -13,6 +13,13 @@ class CharactersLocalDataSource {
     return _box.put(HiveConstants.charactersPageKey(page), response.toJson());
   }
 
+  Future<void> cacheCharacters(List<CharacterModel> characters) async {
+    final entries = <dynamic, dynamic>{
+      for (final c in characters) HiveConstants.characterByIdKey(c.id): c.toJson(),
+    };
+    await _box.putAll(entries);
+  }
+
   CharacterResponseModel? getCachedCharactersPage(int page) {
     final cached = _box.get(HiveConstants.charactersPageKey(page));
     if (cached is Map) {
@@ -21,32 +28,11 @@ class CharactersLocalDataSource {
     return null;
   }
 
-  List<CharacterModel> getCachedCharactersByIds(Iterable<int> ids) {
-    final wanted = ids.toSet();
-    if (wanted.isEmpty) {
-      return const [];
+  CharacterModel? getCachedCharacterById(int id) {
+    final cached = _box.get(HiveConstants.characterByIdKey(id));
+    if (cached is Map) {
+      return CharacterModel.fromJson(Map<String, dynamic>.from(cached));
     }
-
-    final Map<int, CharacterModel> found = {};
-    for (final value in _box.values) {
-      if (found.length == wanted.length) {
-        break;
-      }
-      if (value is! Map) {
-        continue;
-      }
-      final json = Map<String, dynamic>.from(value);
-      final response = CharacterResponseModel.fromJson(json);
-      for (final character in response.characters) {
-        if (wanted.contains(character.id)) {
-          found[character.id] = character;
-        }
-      }
-    }
-
-    return wanted
-        .map((id) => found[id])
-        .whereType<CharacterModel>()
-        .toList();
+    return null;
   }
 }

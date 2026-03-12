@@ -23,9 +23,9 @@ class AppTopBar extends StatelessWidget implements PreferredSizeWidget {
         IconButton(
           tooltip: 'Toggle theme',
           icon: Icon(isDark ? Icons.light_mode : Icons.dark_mode),
-          onPressed: () {
+          onPressed: () async {
             final cubit = context.read<ThemeCubit>();
-            cubit.setTheme(isDark ? ThemeMode.light : ThemeMode.dark);
+            await cubit.setTheme(isDark ? ThemeMode.light : ThemeMode.dark);
           },
         ),
       ],

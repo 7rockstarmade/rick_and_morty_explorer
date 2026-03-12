@@ -19,6 +19,7 @@ class CharactersRepositoryImpl implements CharactersRepository {
   Future<CharacterResponseModel> getCharacters(int page) async {
     try {
       final response = await remoteDataSource.getCharacters(page);
+      await localDataSource.cacheCharacters(response.characters);
       await localDataSource.cacheCharactersPage(page, response);
       return response;
     } catch (_) {
