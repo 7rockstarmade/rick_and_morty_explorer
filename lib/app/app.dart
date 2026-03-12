@@ -1,5 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:rick_and_morty_exporer/core/network/dio_client.dart';
+import 'package:rick_and_morty_exporer/features/characters/data/datasources/characters_local_datasource.dart';
+import 'package:rick_and_morty_exporer/features/characters/data/datasources/characters_remote_datasource.dart';
+import 'package:rick_and_morty_exporer/features/characters/data/repositories/characters_repository.dart';
+import 'package:rick_and_morty_exporer/features/characters/presentation/bloc/characters_bloc.dart';
+import 'package:rick_and_morty_exporer/features/characters/presentation/bloc/characters_event.dart';
 import 'package:rick_and_morty_exporer/features/home/presentation/pages/home_shell.dart';
 import 'package:rick_and_morty_exporer/features/home/presentation/bloc/nav_cubit.dart';
 import 'package:rick_and_morty_exporer/app/theme/app_theme.dart';
@@ -13,25 +19,49 @@ class RickAndMortyExplorer extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MultiBlocProvider(
+    return MultiRepositoryProvider(
       providers: [
-        BlocProvider(create: (_) => ThemeCubit()),
-        BlocProvider(create: (_) => NavCubit()),
-        BlocProvider(
-          create: (_) => FavoritesCubit(
-            FavoritesRepositoryImpl(FavoritesLocalDataSource()),
-          )..load(),
+        RepositoryProvider<CharactersRepository>(
+          create: (_) => CharactersRepositoryImpl(
+            remoteDataSource: CharactersRemoteDatasourceImpl(
+              DioClient.instance,
+            ),
+            localDataSource: CharactersLocalDataSourceImpl(),
+          ),
+        ),
+        RepositoryProvider<FavoritesRepository>(
+          create: (_) =>
+              FavoritesRepositoryImpl(FavoritesLocalDatasourceImpl()),
         ),
       ],
-      child: BlocBuilder<ThemeCubit, ThemeMode>(
-        builder: (context, themeMode) {
-          return MaterialApp(
-            debugShowCheckedModeBanner: false,
-            title: 'Rick & Morty Explorer',
-            theme: AppTheme.light,
-            darkTheme: AppTheme.dark,
-            themeMode: themeMode,
-            home: const HomePage(),
+      child: Builder(
+        builder: (context) {
+          return MultiBlocProvider(
+            providers: [
+              BlocProvider(create: (_) => ThemeCubit()),
+              BlocProvider(create: (_) => NavCubit()),
+              BlocProvider(
+                create: (context) =>
+                    CharactersBloc(context.read<CharactersRepository>())
+                      ..add(CharactersStarted()),
+              ),
+              BlocProvider(
+                create: (context) =>
+                    FavoritesCubit(context.read<FavoritesRepository>())..load(),
+              ),
+            ],
+            child: BlocBuilder<ThemeCubit, ThemeMode>(
+              builder: (context, themeMode) {
+                return MaterialApp(
+                  debugShowCheckedModeBanner: false,
+                  title: 'Rick & Morty Explorer',
+                  theme: AppTheme.light,
+                  darkTheme: AppTheme.dark,
+                  themeMode: themeMode,
+                  home: const HomePage(),
+                );
+              },
+            ),
           );
         },
       ),
