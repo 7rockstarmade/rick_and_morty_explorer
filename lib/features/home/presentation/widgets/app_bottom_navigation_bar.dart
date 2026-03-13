@@ -20,6 +20,9 @@ class AppBottomNavigationBar extends StatelessWidget {
     return NavigationBarTheme(
       data: NavigationBarThemeData(
         indicatorColor: scheme.primaryContainer,
+        labelTextStyle: WidgetStateProperty.resolveWith((_) {
+          return TextStyle(fontSize: 14, fontWeight: .w500);
+        }),
         iconTheme: WidgetStateProperty.resolveWith((states) {
           final color = states.contains(WidgetState.selected)
               ? selected

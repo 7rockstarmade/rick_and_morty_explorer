@@ -17,7 +17,7 @@ class AppTopBar extends StatelessWidget implements PreferredSizeWidget {
     return AppBar(
       title: Text(
         title,
-        style: const TextStyle(fontWeight: .w600, fontSize: 26),
+        style: const TextStyle(fontWeight: .w600, fontSize: 30),
       ),
       actions: [
         IconButton(

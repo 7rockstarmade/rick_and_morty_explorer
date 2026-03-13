@@ -68,6 +68,7 @@ class CharacterCard extends StatelessWidget {
                       overflow: TextOverflow.ellipsis,
                       style: Theme.of(context).textTheme.titleMedium?.copyWith(
                         fontWeight: FontWeight.w700,
+                        fontSize: 18,
                       ),
                     ),
                     const SizedBox(height: 4),
