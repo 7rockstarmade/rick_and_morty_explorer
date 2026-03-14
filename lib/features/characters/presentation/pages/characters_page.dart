@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:rick_and_morty_exporer/features/characters/presentation/bloc/characters_bloc.dart';
 import 'package:rick_and_morty_exporer/features/characters/presentation/bloc/characters_event.dart';
 import 'package:rick_and_morty_exporer/features/characters/presentation/bloc/characters_state.dart';
+import 'package:rick_and_morty_exporer/features/characters/presentation/widgets/info_cache_widget.dart';
 import 'package:rick_and_morty_exporer/features/favorites/presentation/bloc/favorites_cubit.dart';
 import 'package:rick_and_morty_exporer/shared/widgets/character_card.dart';
 
@@ -44,35 +45,7 @@ class CharactersPage extends StatelessWidget {
                     SliverToBoxAdapter(
                       child: Padding(
                         padding: const EdgeInsets.fromLTRB(16, 16, 16, 0),
-                        child: Container(
-                          padding: const EdgeInsets.symmetric(
-                            horizontal: 14,
-                            vertical: 10,
-                          ),
-                          decoration: BoxDecoration(
-                            color: scheme.primary,
-                            borderRadius: BorderRadius.circular(14),
-                          ),
-                          child: Row(
-                            children: [
-                              Icon(
-                                Icons.cloud_off,
-                                size: 18,
-                                color: scheme.onSecondaryContainer,
-                              ),
-                              const SizedBox(width: 8),
-                              Expanded(
-                                child: Text(
-                                  'Showing cached characters. Internet is unavailable.',
-                                  style: Theme.of(context).textTheme.bodyMedium
-                                      ?.copyWith(
-                                        color: scheme.onSecondaryContainer,
-                                      ),
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
+                        child: InfoCacheWidget(),
                       ),
                     ),
                   SliverPadding(
