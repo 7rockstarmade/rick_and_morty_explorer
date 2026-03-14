@@ -47,7 +47,10 @@ class RickAndMortyExplorer extends StatelessWidget {
               ),
               BlocProvider(
                 create: (context) =>
-                    FavoritesCubit(context.read<FavoritesRepository>())..load(),
+                    FavoritesCubit(
+                      context.read<FavoritesRepository>(),
+                      context.read<CharactersRepository>(),
+                    )..load(),
               ),
             ],
             child: BlocBuilder<ThemeCubit, ThemeMode>(

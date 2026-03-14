@@ -18,7 +18,9 @@ class CharactersPage extends StatelessWidget {
           loading: (_) => const Center(child: CircularProgressIndicator()),
           error: (e) => Center(child: Text(e.message ?? 'Unknown error')),
           loaded: (state) {
-            final favoriteIds = context.watch<FavoritesCubit>().state;
+            final favoriteIds = context.select(
+              (FavoritesCubit cubit) => cubit.state.favoriteIds,
+            );
 
             return NotificationListener<ScrollNotification>(
               onNotification: (notification) {
