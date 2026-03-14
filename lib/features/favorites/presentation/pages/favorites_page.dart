@@ -10,18 +10,29 @@ class FavoritesPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final ids = context.watch<FavoritesCubit>().state;
-    final orderedIds = ids.toList()..sort();
     final repo = context.read<CharactersRepository>();
     if (ids.isEmpty) {
       return const Center(child: Text('No favorites yet'));
     }
+
+    final favoriteItems = ids
+        .map((id) => (id: id, character: repo.getCachedCharacterById(id)))
+        .toList()
+      ..sort((a, b) {
+        final left = (a.character?.name ?? 'Character #${a.id}').toLowerCase();
+        final right =
+            (b.character?.name ?? 'Character #${b.id}').toLowerCase();
+        return left.compareTo(right);
+      });
+
     return ListView.separated(
       padding: const EdgeInsets.all(16),
-      itemCount: orderedIds.length,
+      itemCount: favoriteItems.length,
       separatorBuilder: (_, _) => const SizedBox(height: 12),
       itemBuilder: (context, index) {
-        final id = orderedIds[index];
-        final character = repo.getCachedCharacterById(id);
+        final item = favoriteItems[index];
+        final id = item.id;
+        final character = item.character;
 
         return CharacterCard(
           imageUrl: character?.image ?? '',
