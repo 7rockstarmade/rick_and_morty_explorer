@@ -22,8 +22,6 @@ class CharactersPage extends StatelessWidget {
             final favoriteIds = context.select(
               (FavoritesCubit cubit) => cubit.state.favoriteIds,
             );
-            final scheme = Theme.of(context).colorScheme;
-
             return NotificationListener<ScrollNotification>(
               onNotification: (notification) {
                 final metrics = notification.metrics;
