@@ -3,8 +3,18 @@ import 'package:rick_and_morty_exporer/features/characters/data/datasources/char
 import 'package:rick_and_morty_exporer/features/characters/data/models/character_model.dart';
 import 'package:rick_and_morty_exporer/features/characters/data/models/character_response_model.dart';
 
+class CharactersPageResult {
+  const CharactersPageResult({
+    required this.response,
+    required this.isFromCache,
+  });
+
+  final CharacterResponseModel response;
+  final bool isFromCache;
+}
+
 abstract class CharactersRepository {
-  Future<CharacterResponseModel> getCharacters(int page);
+  Future<CharactersPageResult> getCharacters(int page);
   Future<void> cacheCharactersPage(int page, CharacterResponseModel response);
   Future<void> cacheCharacters(List<CharacterModel> characters);
   CharacterResponseModel? getCachedCharactersPage(int page);
@@ -21,16 +31,16 @@ class CharactersRepositoryImpl implements CharactersRepository {
   });
 
   @override
-  Future<CharacterResponseModel> getCharacters(int page) async {
+  Future<CharactersPageResult> getCharacters(int page) async {
     try {
       final response = await remoteDataSource.getCharacters(page);
       await localDataSource.cacheCharacters(response.characters);
       await localDataSource.cacheCharactersPage(page, response);
-      return response;
+      return CharactersPageResult(response: response, isFromCache: false);
     } catch (_) {
       final cached = localDataSource.getCachedCharactersPage(page);
       if (cached != null) {
-        return cached;
+        return CharactersPageResult(response: cached, isFromCache: true);
       }
       rethrow;
     }

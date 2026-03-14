@@ -21,6 +21,7 @@ class CharactersPage extends StatelessWidget {
             final favoriteIds = context.select(
               (FavoritesCubit cubit) => cubit.state.favoriteIds,
             );
+            final scheme = Theme.of(context).colorScheme;
 
             return NotificationListener<ScrollNotification>(
               onNotification: (notification) {
@@ -39,8 +40,48 @@ class CharactersPage extends StatelessWidget {
               },
               child: CustomScrollView(
                 slivers: [
+                  if (state.isFromCache)
+                    SliverToBoxAdapter(
+                      child: Padding(
+                        padding: const EdgeInsets.fromLTRB(16, 16, 16, 0),
+                        child: Container(
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 14,
+                            vertical: 10,
+                          ),
+                          decoration: BoxDecoration(
+                            color: scheme.primary,
+                            borderRadius: BorderRadius.circular(14),
+                          ),
+                          child: Row(
+                            children: [
+                              Icon(
+                                Icons.cloud_off,
+                                size: 18,
+                                color: scheme.onSecondaryContainer,
+                              ),
+                              const SizedBox(width: 8),
+                              Expanded(
+                                child: Text(
+                                  'Showing cached characters. Internet is unavailable.',
+                                  style: Theme.of(context).textTheme.bodyMedium
+                                      ?.copyWith(
+                                        color: scheme.onSecondaryContainer,
+                                      ),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                    ),
                   SliverPadding(
-                    padding: const EdgeInsets.all(16),
+                    padding: EdgeInsets.fromLTRB(
+                      16,
+                      state.isFromCache ? 12 : 16,
+                      16,
+                      16,
+                    ),
                     sliver: SliverList(
                       delegate: SliverChildBuilderDelegate(
                         childCount: state.characters.length,

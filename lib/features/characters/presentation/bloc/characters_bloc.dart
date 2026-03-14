@@ -25,6 +25,14 @@ class CharactersBloc extends Bloc<CharactersEvent, CharactersState> {
     return int.tryParse(uri.queryParameters['page'] ?? '');
   }
 
+  String _mapErrorMessage(Object error) {
+    final text = error.toString();
+    if (text.contains('SocketException') || text.contains('DioException')) {
+      return 'Unable to load characters. Check your internet connection.';
+    }
+    return 'Unable to load characters right now.';
+  }
+
   Future<void> _onStarted(
     CharactersStarted event,
     Emitter<CharactersState> emit,
@@ -62,7 +70,8 @@ class CharactersBloc extends Bloc<CharactersEvent, CharactersState> {
     emit(loadedState.copyWith(isFetchingMore: true));
 
     try {
-      final response = await _repository.getCharacters(nextPage);
+      final result = await _repository.getCharacters(nextPage);
+      final response = result.response;
       final mergedCharacters = <CharacterModel>[
         ...loadedState.characters,
         ...response.characters,
@@ -77,6 +86,7 @@ class CharactersBloc extends Bloc<CharactersEvent, CharactersState> {
           currentPage: nextPage,
           hasMore: hasMore,
           next: nextFromApi,
+          isFromCache: loadedState.isFromCache || result.isFromCache,
           isFetchingMore: false,
         ),
       );
@@ -88,7 +98,8 @@ class CharactersBloc extends Bloc<CharactersEvent, CharactersState> {
   Future<void> _loadFirstPage(Emitter<CharactersState> emit) async {
     emit(const CharactersState.loading());
     try {
-      final response = await _repository.getCharacters(ApiConstants.firstPage);
+      final result = await _repository.getCharacters(ApiConstants.firstPage);
+      final response = result.response;
       final nextFromApi = response.next;
       final hasMore = _extractPage(nextFromApi) != null;
       emit(
@@ -97,10 +108,11 @@ class CharactersBloc extends Bloc<CharactersEvent, CharactersState> {
           currentPage: ApiConstants.firstPage,
           hasMore: hasMore,
           next: nextFromApi,
+          isFromCache: result.isFromCache,
         ),
       );
     } catch (e) {
-      emit(CharactersState.error(e.toString()));
+      emit(CharactersState.error(_mapErrorMessage(e)));
     }
   }
 }
