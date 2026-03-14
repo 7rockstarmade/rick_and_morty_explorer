@@ -51,6 +51,7 @@ class CharactersPage extends StatelessWidget {
                               imageUrl: character.image,
                               name: character.name,
                               species: character.species,
+                              location: character.location,
                               isFavorite: isFavorite,
                               onFavoritePressed: () => context
                                   .read<FavoritesCubit>()

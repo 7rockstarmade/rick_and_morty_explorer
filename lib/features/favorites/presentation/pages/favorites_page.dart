@@ -38,6 +38,7 @@ class FavoritesPage extends StatelessWidget {
           imageUrl: character?.image ?? '',
           name: character?.name ?? 'Character #$id',
           species: character?.species ?? 'Unknown species',
+          location: character?.location ?? 'Unknown location',
           isFavorite: true,
           onFavoritePressed: () => context.read<FavoritesCubit>().toggle(id),
         );

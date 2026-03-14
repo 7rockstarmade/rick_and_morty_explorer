@@ -7,6 +7,7 @@ class CharacterCard extends StatelessWidget {
     required this.imageUrl,
     required this.name,
     required this.species,
+    required this.location,
     this.isFavorite = false,
     this.onFavoritePressed,
     this.onTap,
@@ -15,6 +16,7 @@ class CharacterCard extends StatelessWidget {
   final String imageUrl;
   final String name;
   final String species;
+  final String location;
   final bool isFavorite;
   final VoidCallback? onFavoritePressed;
   final VoidCallback? onTap;
@@ -77,6 +79,15 @@ class CharacterCard extends StatelessWidget {
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
                       style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                        color: scheme.onSurfaceVariant,
+                      ),
+                    ),
+                    const SizedBox(height: 2),
+                    Text(
+                      location,
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                      style: Theme.of(context).textTheme.bodySmall?.copyWith(
                         color: scheme.onSurfaceVariant,
                       ),
                     ),
