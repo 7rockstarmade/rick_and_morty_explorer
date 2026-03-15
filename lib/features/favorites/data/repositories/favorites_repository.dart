@@ -8,7 +8,7 @@ abstract class FavoritesRepository {
 class FavoritesRepositoryImpl implements FavoritesRepository {
   FavoritesRepositoryImpl(this._local);
 
-  final FavoritesLocalDatasource _local;
+  final FavoritesLocalDataSource _local;
 
   @override
   Set<int> loadFavoriteIds() => _local.loadFavoriteIds();

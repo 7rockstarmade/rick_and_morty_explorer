@@ -2,13 +2,13 @@ import 'package:dio/dio.dart';
 import 'package:rick_and_morty_exporer/core/constants/api_constants.dart';
 import 'package:rick_and_morty_exporer/features/characters/data/models/character_response_model.dart';
 
-abstract class CharactersRemoteDatasource {
+abstract class CharactersRemoteDataSource {
   Future<CharacterResponseModel> getCharacters(int page);
 }
 
-class CharactersRemoteDatasourceImpl implements CharactersRemoteDatasource {
+class CharactersRemoteDataSourceImpl implements CharactersRemoteDataSource {
   final Dio dio;
-  const CharactersRemoteDatasourceImpl(this.dio);
+  const CharactersRemoteDataSourceImpl(this.dio);
 
   @override
   Future<CharacterResponseModel> getCharacters(int page) async {
