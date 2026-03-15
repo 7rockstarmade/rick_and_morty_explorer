@@ -37,53 +37,60 @@ class CharactersPage extends StatelessWidget {
                 }
                 return false;
               },
-              child: CustomScrollView(
-                slivers: [
-                  if (state.isFromCache)
-                    SliverToBoxAdapter(
-                      child: Padding(
-                        padding: const EdgeInsets.fromLTRB(16, 16, 16, 0),
-                        child: InfoCacheWidget(),
+              child: RefreshIndicator(
+                onRefresh: () async {
+                  context.read<CharactersBloc>().add(CharactersRefreshed());
+                },
+                child: CustomScrollView(
+                  slivers: [
+                    if (state.isFromCache)
+                      SliverToBoxAdapter(
+                        child: Padding(
+                          padding: const EdgeInsets.fromLTRB(16, 16, 16, 0),
+                          child: InfoCacheWidget(),
+                        ),
+                      ),
+                    SliverPadding(
+                      padding: EdgeInsets.fromLTRB(
+                        16,
+                        state.isFromCache ? 12 : 16,
+                        16,
+                        16,
+                      ),
+                      sliver: SliverList(
+                        delegate: SliverChildBuilderDelegate(
+                          childCount: state.characters.length,
+                          (context, index) {
+                            final character = state.characters[index];
+                            final isFavorite = favoriteIds.contains(
+                              character.id,
+                            );
+                            return Padding(
+                              padding: const EdgeInsets.only(bottom: 12),
+                              child: CharacterCard(
+                                imageUrl: character.image,
+                                name: character.name,
+                                species: character.species,
+                                location: character.location,
+                                isFavorite: isFavorite,
+                                onFavoritePressed: () => context
+                                    .read<FavoritesCubit>()
+                                    .toggle(character.id),
+                              ),
+                            );
+                          },
+                        ),
                       ),
                     ),
-                  SliverPadding(
-                    padding: EdgeInsets.fromLTRB(
-                      16,
-                      state.isFromCache ? 12 : 16,
-                      16,
-                      16,
-                    ),
-                    sliver: SliverList(
-                      delegate: SliverChildBuilderDelegate(
-                        childCount: state.characters.length,
-                        (context, index) {
-                          final character = state.characters[index];
-                          final isFavorite = favoriteIds.contains(character.id);
-                          return Padding(
-                            padding: const EdgeInsets.only(bottom: 12),
-                            child: CharacterCard(
-                              imageUrl: character.image,
-                              name: character.name,
-                              species: character.species,
-                              location: character.location,
-                              isFavorite: isFavorite,
-                              onFavoritePressed: () => context
-                                  .read<FavoritesCubit>()
-                                  .toggle(character.id),
-                            ),
-                          );
-                        },
+                    if (state.isFetchingMore)
+                      const SliverToBoxAdapter(
+                        child: Padding(
+                          padding: EdgeInsets.only(bottom: 24),
+                          child: Center(child: CircularProgressIndicator()),
+                        ),
                       ),
-                    ),
-                  ),
-                  if (state.isFetchingMore)
-                    const SliverToBoxAdapter(
-                      child: Padding(
-                        padding: EdgeInsets.only(bottom: 24),
-                        child: Center(child: CircularProgressIndicator()),
-                      ),
-                    ),
-                ],
+                  ],
+                ),
               ),
             );
           },
