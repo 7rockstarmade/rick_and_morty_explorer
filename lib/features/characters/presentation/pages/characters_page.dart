@@ -6,6 +6,7 @@ import 'package:rick_and_morty_exporer/features/characters/presentation/bloc/cha
 import 'package:rick_and_morty_exporer/features/characters/presentation/widgets/info_cache_widget.dart';
 import 'package:rick_and_morty_exporer/features/favorites/presentation/bloc/favorites_cubit.dart';
 import 'package:rick_and_morty_exporer/shared/widgets/character_card.dart';
+import 'package:rick_and_morty_exporer/shared/widgets/empty_state_widget.dart';
 
 class CharactersPage extends StatelessWidget {
   const CharactersPage({super.key});
@@ -17,7 +18,10 @@ class CharactersPage extends StatelessWidget {
         return state.map(
           initial: (_) => const SizedBox.shrink(),
           loading: (_) => const Center(child: CircularProgressIndicator()),
-          error: (e) => Center(child: Text(e.message ?? 'Unknown error')),
+          error: (e) => EmptyStateWidget(
+            title: e.message ?? 'Unknown error',
+            icon: Icons.cloud_off,
+          ),
           loaded: (state) {
             final favoriteIds = context.select(
               (FavoritesCubit cubit) => cubit.state.favoriteIds,
